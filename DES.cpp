@@ -1,8 +1,8 @@
 /**********************************************************************************************************/
-/*                                   Artificial Nerual Network Algorithm Develop Kit                                      */
-/*                                                       CelestialTS Tech Inc.                                                            */
-/*                                                    Copyright © 2015-2017                                                          */
-/*                                       For more check : www.tianshicangxie.com                                          */
+/*                                   Artificial Nerual Network Algorithm Develop Kit                      */
+/*                                             CelestialTS Tech Inc.                                      */
+/*                                            Copyright © 2015-2017                                       */
+/*                                    For more check : www.tianshicangxie.com                             */
 /**********************************************************************************************************/
 #include "DES.h"
 
@@ -35,22 +35,22 @@ bitset<64> SymmtricKey::DES::Encode(bitset<64> _data)
     bitset<32> temp_leftcode;
     // IP
     currentcode = Initial_Permutation(_data);
-    
-    for (int i = 0; i < 32; i++)
+
+    for (size_t i = 0; i < 32; i++)
         leftcode[i] = currentcode[i];
-    for (int i = 32; i < 64; i++)
+    for (size_t i = 32; i < 64; i++)
         rightcode[i - 32] = currentcode[i];
     //16 rounds
-    for (int round = 0; round < 16; ++round)
+    for (size_t round = 0; round < 16; ++round)
     {
         temp_leftcode = rightcode;
         rightcode = leftcode ^ F(rightcode, SubKeys[round]);
         leftcode = temp_leftcode;
     }
-    
-    for (int i = 0; i < 32; i++)
+
+    for (size_t i = 0; i < 32; i++)
         currentcode[i] = rightcode[i];
-    for (int i = 32; i < 64; i++)
+    for (size_t i = 32; i < 64; i++)
         currentcode[i] = leftcode[i - 32];
     // IP-1
     encode = Final_Permutation(currentcode);
@@ -67,21 +67,21 @@ bitset<64> SymmtricKey::DES::Decode(bitset<64> _data)
     // IP
     currentcode = Initial_Permutation(_data);
 
-    for (int i = 0; i < 32; i++)
+    for (size_t i = 0; i < 32; i++)
         leftcode[i] = currentcode[i];
-    for (int i = 32; i < 64; i++)
+    for (size_t i = 32; i < 64; i++)
         rightcode[i - 32] = currentcode[i];
     // 16 rounds
-    for (int round = 0; round < 16; ++round)
+    for (size_t round = 0; round < 16; ++round)
     {
         temp_leftcode = rightcode;
         rightcode = leftcode ^ F(rightcode, SubKeys[15 - round]);
         leftcode = temp_leftcode;
     }
 
-    for (int i = 0; i < 32; i++)
+    for (size_t i = 0; i < 32; i++)
         currentcode[i] = rightcode[i];
-    for (int i = 32; i < 64; i++)
+    for (size_t i = 32; i < 64; i++)
         currentcode[i] = leftcode[i - 32];
     // IP-1  
     decode = Final_Permutation(currentcode);
@@ -91,7 +91,7 @@ bitset<64> SymmtricKey::DES::Decode(bitset<64> _data)
 bitset<64> SymmtricKey::DES::Initial_Permutation(bitset<64> _data)
 {
     bitset<64> temp;
-    for (int i = 0; i < 64; i++)
+    for (size_t i = 0; i < 64; i++)
         temp[i] = _data[IP_Table[i] - 1];
     return temp;
 }
@@ -99,7 +99,7 @@ bitset<64> SymmtricKey::DES::Initial_Permutation(bitset<64> _data)
 bitset<64> SymmtricKey::DES::Final_Permutation(bitset<64> _data)
 {
     bitset<64> temp;
-    for (int i = 0; i < 64; i++)
+    for (size_t i = 0; i < 64; i++)
         temp[i] = _data[FP_Table[i] - 1];
     return temp;
 }
@@ -114,10 +114,10 @@ FuncStat SymmtricKey::DES::Subkey_Generate(void)
     bitset<56> compressedKey;
 
     // the left part(28-bit) of the real key(56-bit)
-    for (int i = 0; i < 28; i++)
+    for (size_t i = 0; i < 28; i++)
         leftpart[i] = realKey[i];
     // the right part(28-bit) of the real key(56-bit)
-    for (int i = 0; i < 28; i++)
+    for (size_t i = 0; i < 28; i++)
         rightpart[i] = realKey[i + 28];
 
     for (size_t round = 0; round < 16; round++)
@@ -143,26 +143,26 @@ bitset<32> SymmtricKey::DES::F(bitset<32> _data, SubKey _subkey)
 {
     bitset<48> extended_data;
     // extending 32-bit data 
-    for (int i = 0; i < 48; i++)
+    for (size_t i = 0; i < 48; i++)
         extended_data[i] = _data[E_Table[i] - 1];
     // XOR 
     extended_data ^= _subkey;
     // S boxing
     bitset<32> temp;
     unsigned index = 0;
-    for (int i = 0; i < 48; i += 6)
+    for (size_t i = 0; i < 48; i += 6)
     {
         unsigned row = extended_data[i] * 2 + extended_data[i + 5];
         unsigned col = extended_data[i + 1] * 8 + extended_data[i + 2] * 4 + extended_data[i + 3] * 2 + extended_data[i + 4];
         unsigned num = S_BOX[i / 6][row][col];
         bitset<4> binary(num);
-        for (int i = 0; i < 4; i++)
+        for (size_t i = 0; i < 4; i++)
             temp[index + i] = binary[i];
         index += 4;
     }
     // P 
     bitset<32> output;
-    for (int i = 0; i < 32; i++)
+    for (size_t i = 0; i < 32; i++)
         output[i] = temp[P_Table[i] - 1];
     return output;
 }
@@ -172,13 +172,13 @@ Key SymmtricKey::DES::String2Key(string _str)
     string tempstr;
     for (size_t i = 0; i != _str.length(); ++i)
         tempstr += Hex2Bin(_str[i]);
-    return Key (tempstr);
+    return Key(tempstr);
 }
 
 bitset<28> SymmtricKey::DES::LeftShift(bitset<28> _key, unsigned _index)
 {
     bitset<28> temp = _key;
-    for (int i = 0; i < 28; i++)
+    for (size_t i = 0; i < 28; i++)
     {
         if (i + _index < 28)
             temp[i] = _key[i + _index];

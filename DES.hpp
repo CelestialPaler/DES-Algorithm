@@ -1,8 +1,8 @@
 /**********************************************************************************************************/
-/*                                   Artificial Nerual Network Algorithm Develop Kit                                      */
-/*                                                       CelestialTS Tech Inc.                                                            */
-/*                                                    Copyright © 2015-2017                                                          */
-/*                                         For more check : www.tianshicangxie.com                                          */
+/*                                   Artificial Nerual Network Algorithm Develop Kit                      */
+/*                                             CelestialTS Tech Inc.                                      */
+/*                                            Copyright © 2015-2017                                       */
+/*                                    For more check : www.tianshicangxie.com                             */
 /**********************************************************************************************************/
 #pragma once
 
